@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  db:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_DATABASE: wordpress_db
+      MYSQL_USER: wordpress_user
+      MYSQL_PASSWORD: example_password
+      MYSQL_ROOT_PASSWORD: root_password
+    volumes:
+      - ./wordpress_mariadb_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress_user
+      WORDPRESS_DB_PASSWORD: example_password # Fixed the mismatch in password
+      WORDPRESS_DB_NAME: wordpress_db # Corrected the database name
+    ports:
+      - "8080:80"
+    volumes:
+      - ./wordpress_wordpress_data:/var/www/html
+    depends_on:
+      - db
